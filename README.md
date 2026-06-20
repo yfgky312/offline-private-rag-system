@@ -62,7 +62,7 @@ streamlit run app.py
 · 前端界面：http://localhost:8501
 
 ---
-###方式二：Docker 部署
+### 方式二：Docker 部署
 
  构建镜像
 docker build -t rag-qa-system .
