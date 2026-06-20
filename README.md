@@ -31,20 +31,6 @@
 
 ---
 
-## 📁 项目结构
-
-offline-private-rag-system/
-├── rag_api.py              # 核心 API 服务
-├── app.py                  # Streamlit 前端界面
-├── requirements.txt        # Python 依赖
-├── Dockerfile              # Docker 镜像构建文件
-├── bge-small-zh-v1.5/      # 本地 Embedding 模型
-│   ├── model.safetensors
-│   ├── config.json
-│   └── tokenizer.json
-└── README.md              # 项目文档
-
----
 
 ## 🚀 快速开始
 
@@ -76,12 +62,12 @@ streamlit run app.py
 · 前端界面：http://localhost:8501
 
 ---
-方式二：Docker 部署
+###方式二：Docker 部署
 
-# 构建镜像
+ 构建镜像
 docker build -t rag-qa-system .
 
-# 运行容器
+ 运行容器
 docker run -p 8000:8000 rag-qa-system
 
 ---
@@ -140,6 +126,7 @@ docker run -p 8000:8000 rag-qa-system
 🗂️ 版本历史
 
 · v2（当前）：本地模型 + 混合检索 + 问答溯源 + Docker 部署
+
 · v1：云端 API + 向量检索
 
 ---
