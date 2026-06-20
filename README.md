@@ -108,30 +108,32 @@ docker run -p 8000:8000 rag-qa-system
 
 📊 功能完成度
 
-功能模块 状态 说明
-本地大模型部署 ✅ 完成 Ollama + DeepSeek 8B
-文档解析 ✅ 完成 支持 TXT / PDF
-文本分块 ✅ 完成 chunk_size=500, overlap=50
-向量检索 ✅ 完成 Chroma + bge-small-zh
-关键词检索 ✅ 完成 BM25 算法
-混合检索 ✅ 完成 向量 + 关键词双路召回
-问答溯源 ✅ 完成 显示引用原文
-FastAPI 接口 ✅ 完成 RESTful API + Swagger
-Streamlit 界面 ✅ 完成 可视化交互
-Docker 部署 ✅ 完成 一键启动
+|功能模块| 状态 |说明|
+|------|----------|------|
+|本地大模型部署| ✅ 完成 |Ollama + DeepSeek 8B|
+|文档解析| ✅ 完成 |支持 TXT / PDF|
+|文本分块 |✅ 完成 |chunk_size=500, overlap=50|
+|向量检索 |✅ 完成| Chroma + bge-small-zh|
+|关键词检索| ✅ 完成| BM25 算法|
+|混合检索 |✅ 完成| 向量 + 关键词双路召回|
+|问答溯源| ✅ 完成 |显示引用原文|
+|FastAPI 接口| ✅ 完成| RESTful API + Swagger|
+|Streamlit 界面| ✅ 完成| 可视化交互|
+|Docker 部署| ✅ 完成| 一键启动|
 
 ---
 
 🎯 与 v1 版本对比
 
-维度 v1（云端 API 版） v2（本地私有化版）
-大模型 DeepSeek API DeepSeek 8B（本地）
-网络依赖 需要联网 完全离线
-检索方式 纯向量检索 混合检索（向量+关键词）
-问答溯源 无 有
-前端界面 Swagger Swagger + Streamlit
-部署方式 手动启动 Docker 一键部署
-适用场景 快速验证 企业私有化生产
+|维度| v1（云端 API 版）| v2（本地私有化版）|
+|------|----------|------|
+|大模型 |DeepSeek API| DeepSeek 8B（本地）|
+|网络依赖 |需要联网| 完全离线|
+|检索方式 |纯向量检索| 混合检索（向量+关键词）|
+|问答溯源| 无| 有|
+|前端界面| Swagger| Swagger + Streamlit|
+|部署方式| 手动启动| Docker 一键部署|
+|适用场景| 快速验证| 企业私有化生产|
 
 ---
 
