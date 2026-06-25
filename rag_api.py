@@ -12,6 +12,7 @@ from langchain_community.embeddings.fastembed import FastEmbedEmbeddings
 from rank_bm25 import BM25Okapi
 
 
+
 # 加载环境变量
 load_dotenv()
 DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
@@ -99,19 +100,16 @@ def build_rag_pipeline(content: str, question: str):
     bm25 = BM25Okapi(tokenized_chunks)
     tokenized_question = question.split()
     bm25_scores = bm25.get_scores(tokenized_question)
-    top_bm25_indices = sorted(range(len(bm25_scores)), key=lambda i: bm25_scores[i], reverse=True)[:3]
+    top_bm25_indices = sorted(range(len(bm25_scores)), key=lambda i: bm25_scores[i], reverse=True)[:10]
     bm25_docs = [chunks[i] for i in top_bm25_indices]
 
     # ===== 向量检索 =====
     retrieved_docs = []
     try:
-        embeddings = HuggingFaceEmbeddings(
-            model_name="./bge-small-zh-v1.5",
-            model_kwargs={"device": "cpu"}
-        )
+        embeddings = FastEmbedEmbeddings(model_name="BAAI/bge-small-en-v1.5")
         vectorstore = Chroma.from_texts(chunks, embeddings)
 
-        retrieved_docs = vectorstore.similarity_search(question, k=3)
+        retrieved_docs = vectorstore.similarity_search(question, k=10)
         logging.info(f"向量检索到 {len(retrieved_docs)} 个相关片段")
 
     except Exception as e:
@@ -126,14 +124,29 @@ def build_rag_pipeline(content: str, question: str):
             seen.add(doc_content)
             combined_docs.append(doc)
 
+    # ===== Rerank 精排 =====
+    if combined_docs:
+        try:
+            from sentence_transformers import CrossEncoder
+            import numpy as np
+
+            reranker = CrossEncoder('BAAI/bge-reranker-v2-m3', max_length=512)
+            pairs = [[question, doc.page_content if hasattr(doc, 'page_content') else doc] for doc in combined_docs]
+            scores = reranker.predict(pairs)
+            ranked_indices = np.argsort(scores)[::-1]
+            combined_docs = [combined_docs[i] for i in ranked_indices]
+            logging.info(f"Rerank 完成，共 {len(combined_docs)} 个候选")
+        except Exception as e:
+            logging.warning(f"Rerank 失败，使用原始顺序: {e}")
+
     # 如果合并后没有结果，改用全文
     if not combined_docs:
         logging.warning("检索结果为空，改用全文")
         context = content[:3000]
         sources = [context[:500]]
     else:
-        context = "\n\n".join([doc.page_content if hasattr(doc, 'page_content') else doc for doc in combined_docs[:3]])
-        sources = [doc.page_content if hasattr(doc, 'page_content') else doc for doc in combined_docs[:3]]
+        context = "\n\n".join([doc.page_content if hasattr(doc, 'page_content') else doc for doc in combined_docs[:5]])
+        sources = [doc.page_content if hasattr(doc, 'page_content') else doc for doc in combined_docs[:5]]
 
     # 生成回答
     answer = call_llm(question, context)
