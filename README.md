@@ -120,6 +120,7 @@ docker run -p 8000:8000 rag_api
 |向量检索 |✅ 完成| Chroma + bge-small-zh|
 |关键词检索| ✅ 完成| BM25 算法|
 |混合检索 |✅ 完成| 向量 + 关键词双路召回|
+|Rerank| ✅ 完成|CrossEncoder|
 |问答溯源| ✅ 完成 |显示引用原文|
 |FastAPI 接口| ✅ 完成| RESTful API + Swagger|
 |Streamlit 界面| ✅ 完成| 可视化交互|
@@ -128,7 +129,6 @@ docker run -p 8000:8000 rag_api
 ---
 
 ## 📝 开发笔记
-
 ### 遇到的主要问题
 
 1. **Ollama 模型下载失败**
@@ -143,10 +143,15 @@ docker run -p 8000:8000 rag_api
    - 问题：向量检索和 BM25 返回的结果有重复，直接拼接会导致重复内容进入上下文
    - 解决：使用 `set()` 去重后再拼接，避免重复片段影响回答质量
 
+4. **Embedding 模型加载失败**
+   - 问题：`HuggingFaceEmbeddings` 报错 `Pooling.__init__() missing 1 required positional argument: 'embedding_dimension'`
+   - 原因：`sentence_transformers` 版本更新后，与旧版模型文件不兼容
+   - 解决：切换到 `FastEmbedEmbeddings`，避免版本兼容问题
+
 ### 待优化方向
 
 - 替换 Chroma 为 Milvus，支持更大规模的知识库
-- 接入 Rerank 模型，对检索结果做二次排序
+- 接入更高效的Rerank 模型，进一步优化检索精度
 - 增加用户权限管理，支持多用户独立使用
 
 🎯 与 v1 版本对比
