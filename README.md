@@ -66,10 +66,10 @@ streamlit run app.py
 ### 方式二：Docker 部署
 
  构建镜像
-docker build -t rag-qa-system .
+docker build -t rag_api .
 
  运行容器
-docker run -p 8000:8000 rag-qa-system
+docker run -p 8000:8000 rag_api
 
 ---
 ## ⚠️ 注意事项
